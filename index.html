@@ -119,7 +119,10 @@ let current="";
 function card(x){
 return `<div class="card set-card" data-cat="${x.c}">
 <div class="badge">${x.p}% Full</div>
-<div class="img">${x.n}</div>
+<div class="img">
+  <img src="${x.img}" alt="${x.n}"
+       style="width:100%;height:160px;object-fit:cover;border-radius:10px;">
+</div>
 <h3>${x.n}</h3>
 <p>${x.info}</p>
 <div class="progress"><div style="width:${x.p}%"></div></div><br>
