@@ -1,210 +1,54 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudDrop Giveaway Hub</title>
-
+<title>StudDrop Giveaways</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-}
-
-/* HEADER */
-header {
-  background: linear-gradient(90deg, #ffcc00, #ff3b3b);
-  padding: 25px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-  color: #111;
-}
-
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-/* CARD */
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 15px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-  transition: 0.2s;
-  position: relative;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-/* BADGE */
-.badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: red;
-  color: white;
-  font-size: 12px;
-  padding: 5px 8px;
-  border-radius: 8px;
-}
-
-/* BUTTON */
-button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: #ff3b3b;
-  color: white;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #d80000;
-}
-
-/* MODAL */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 300px;
-}
-
-input {
-  width: 100%;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.small {
-  font-size: 12px;
-  color: gray;
-}
-
-.count {
-  font-weight: bold;
-}
+body{font-family:Arial;margin:0;background:#f4f4f4}
+header{background:#ffcc00;padding:20px;text-align:center}
+nav{background:#222;padding:10px;text-align:center}
+nav a{color:white;margin:0 15px;text-decoration:none}
+.hero{padding:40px;text-align:center;background:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;padding:20px}
+.card{background:white;padding:20px;border-radius:10px;text-align:center}
+.btn{display:inline-block;background:#ff3b3b;color:white;padding:10px 15px;text-decoration:none;border-radius:6px}
 </style>
 </head>
-
 <body>
 
 <header>
-🧱 StudDrop Giveaway Hub
+<h1>🧱 StudDrop Giveaways</h1>
 </header>
 
+<nav>
+<a href="index.html">Home</a>
+<a href="f1.html">F1 Zone</a>
+<a href="winners.html">Winners</a>
+<a href="faq.html">FAQ</a>
+</nav>
+
+<div class="hero">
+<h2>Current Featured Giveaways</h2>
+<p>Choose a giveaway below and enter for a chance to win.</p>
+</div>
+
 <div class="grid">
-
-  <div class="card">
-    <div class="badge">LIVE</div>
-    <h3>Space Drop Pack</h3>
-    <p>Epic space-themed build set</p>
-    <p>Entries: <span class="count" id="c1">128</span></p>
-    <p class="small" id="t1"></p>
-    <button onclick="openModal('Space Drop Pack')">Enter</button>
-  </div>
-
-  <div class="card">
-    <div class="badge">HOT</div>
-    <h3>City Builder Kit</h3>
-    <p>Urban building collection</p>
-    <p>Entries: <span class="count" id="c2">94</span></p>
-    <p class="small" id="t2"></p>
-    <button onclick="openModal('City Builder Kit')">Enter</button>
-  </div>
-
-  <div class="card">
-    <div class="badge">NEW</div>
-    <h3>Mystery Brick Box</h3>
-    <p>Surprise contents inside</p>
-    <p>Entries: <span class="count" id="c3">52</span></p>
-    <p class="small" id="t3"></p>
-    <button onclick="openModal('Mystery Brick Box')">Enter</button>
-  </div>
-
+<div class="card">
+<h3>LEGO Star Wars Millennium Falcon</h3>
+<a class="btn" href="millennium-falcon.html">View Giveaway</a>
 </div>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h3 id="title">Enter Giveaway</h3>
-
-    <input placeholder="Name">
-    <input placeholder="Email">
-
-    <button onclick="submitEntry()">Submit Entry</button>
-    <p class="small">This is a demo front-end only system.</p>
-  </div>
+<div class="card">
+<h3>LEGO Icons McLaren MP4/4</h3>
+<a class="btn" href="mclaren-mp4-4.html">View Giveaway</a>
 </div>
 
-<script>
-let selected = "";
-
-/* OPEN MODAL */
-function openModal(name) {
-  selected = name;
-  document.getElementById("title").innerText = "Enter: " + name;
-  document.getElementById("modal").style.display = "flex";
-}
-
-/* CLOSE MODAL */
-window.onclick = function(e) {
-  if (e.target == document.getElementById("modal")) {
-    document.getElementById("modal").style.display = "none";
-  }
-}
-
-/* FAKE SUBMIT */
-function submitEntry() {
-  alert("Entry submitted for " + selected + " 🎉");
-  document.getElementById("modal").style.display = "none";
-}
-
-/* LIVE COUNT SIMULATION */
-setInterval(() => {
-  document.getElementById("c1").innerText++;
-  document.getElementById("c2").innerText++;
-}, 4000);
-
-/* COUNTDOWN SIMULATION */
-function countdown(id, seconds) {
-  setInterval(() => {
-    let m = Math.floor(seconds / 60);
-    let s = seconds % 60;
-    document.getElementById(id).innerText =
-      "Next draw: " + m + "m " + s + "s";
-    seconds--;
-  }, 1000);
-}
-
-countdown("t1", 3600);
-countdown("t2", 5400);
-countdown("t3", 7200);
-</script>
+<div class="card">
+<h3>LEGO Ferrari Daytona SP3</h3>
+<a class="btn" href="ferrari-daytona.html">View Giveaway</a>
+</div>
+</div>
 
 </body>
 </html>
