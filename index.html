@@ -85,8 +85,14 @@ input{width:100%;padding:8px;margin:6px 0}
 <div class="drawer" id="drawer">
 <div class="drawer-content">
 <h2 id="dTitle"></h2>
+<img id="drawerImage"
+     style="width:100%;border-radius:12px;margin-bottom:10px;">
 <p id="dInfo"></p>
 <p id="dCountdown"></p>
+<button class="primary"
+onclick="details('${x.n}','${x.info}','${x.img}')">
+View Details
+</button>
 <button class="primary" onclick="openModal()">Enter Giveaway</button>
 <button onclick="closeDrawer()">Close</button>
 </div>
@@ -180,12 +186,14 @@ return `<div class="card set-card" data-cat="${x.c}">
 legoGrid.innerHTML=items.filter(x=>x.c==="LEGO").map(card).join("");
 f1Grid.innerHTML=items.filter(x=>x.c==="F1").map(card).join("");
 
-function details(name,info){
-current=name;
-dTitle.textContent=name;
-dInfo.textContent=info;
-drawer.style.display="block";
+function details(name,info,img){
+    current=name;
+    dTitle.textContent=name;
+    dInfo.textContent=info;
+    document.getElementById("drawerImage").src=img;
+    drawer.style.display="block";
 }
+
 function closeDrawer(){drawer.style.display="none";}
 function openModal(){
 drawer.style.display="none";
