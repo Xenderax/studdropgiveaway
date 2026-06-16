@@ -389,14 +389,16 @@ window.addEventListener("load", () => {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyADAh_AqoydeowXjkrWsxSc7xeVsTIrBf4",
   authDomain: "studdropgiveaway.firebaseapp.com",
   databaseURL: "https://studdropgiveaway-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "studdropgiveaway",
   storageBucket: "studdropgiveaway.firebasestorage.app",
   messagingSenderId: "154910365645",
-  appId: "1:154910365645:web:4100622eaded60e0861684"
+  appId: "1:154910365645:web:4100622eaded60e0861684",
+  measurementId: "G-QEQ8QHQNBB"
 };
 
 const app = initializeApp(firebaseConfig);
