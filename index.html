@@ -63,11 +63,45 @@ input{width:100%;padding:8px;margin:6px 0}
 </div>
 </header>
 
+<section id="account">
+<h2>👤 Account</h2>
+
+<div id="loggedOut">
+<input id="signupUser" placeholder="Username">
+<input id="signupPass" type="password" placeholder="Password">
+<button onclick="signUp()">Sign Up</button>
+
+<br><br>
+
+<input id="loginUser" placeholder="Username">
+<input id="loginPass" type="password" placeholder="Password">
+<button onclick="login()">Sign In</button>
+</div>
+
+<div id="loggedIn" style="display:none;">
+<p>Welcome, <span id="currentUser"></span>!</p>
+
+<label>
+<input type="checkbox" id="rememberMe">
+Remember Me
+</label>
+
+<br><br>
+
+<button onclick="logout()">Log Out</button>
+
+<button onclick="window.open('https://instagram.com/YOUR_USERNAME','_blank')">
+📸 Visit Our Instagram
+</button>
+</div>
+</section>
+
 <nav>
 <a href="#featured">Featured</a>
 <a href="#lego">LEGO</a>
 <a href="#f1">F1</a>
 <a href="#winners">Winners</a>
+<a href="#account">Account</a>
 <a href="#faq">FAQ</a>
 </nav>
 
@@ -217,6 +251,13 @@ function details(name,info,img){
 
 function closeDrawer(){drawer.style.display="none";}
 function openModal(){
+
+const user = localStorage.getItem("loggedInUser");
+
+if(!user){
+    alert("Please sign in first.");
+    return;
+}
 drawer.style.display="none";
 mTitle.textContent=current;
 modal.style.display="flex";
@@ -259,6 +300,76 @@ let h=Math.floor((diff%86400000)/3600000);
 globalCountdown.textContent=`Featured giveaway ends in ${d}d ${h}h`;
 dCountdown.textContent=`Ends in ${d}d ${h}h`;
 },1000);
+
+function signUp() {
+    const user = signupUser.value.trim();
+    const pass = signupPass.value;
+
+    if (!user || !pass) {
+        alert("Enter username and password.");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users") || "{}");
+
+    if (users[user]) {
+        alert("Username already exists.");
+        return;
+    }
+
+    users[user] = pass;
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Account created.");
+}
+
+function login() {
+    const user = loginUser.value.trim();
+    const pass = loginPass.value;
+
+    let users = JSON.parse(localStorage.getItem("users") || "{}");
+
+    if (users[user] === pass) {
+
+        localStorage.setItem("loggedInUser", user);
+
+        if (document.getElementById("rememberMe")?.checked) {
+            localStorage.setItem("rememberUser", user);
+        }
+
+        showLoggedIn(user);
+
+    } else {
+        alert("Invalid username or password.");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("loggedInUser");
+
+    loggedOut.style.display = "block";
+    loggedIn.style.display = "none";
+}
+
+function showLoggedIn(user) {
+    loggedOut.style.display = "none";
+    loggedIn.style.display = "block";
+
+    currentUser.textContent = user;
+}
+
+window.addEventListener("load", () => {
+
+    const remembered =
+        localStorage.getItem("loggedInUser") ||
+        localStorage.getItem("rememberUser");
+
+    if (remembered) {
+        showLoggedIn(remembered);
+    }
+});
+
 </script>
 </body>
 </html>
