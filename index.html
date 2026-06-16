@@ -264,13 +264,27 @@ modal.style.display="flex";
 }
 modal.onclick=e=>{if(e.target.id==="modal")modal.style.display="none";}
 
-function submitEntry(){
-let entries=JSON.parse(localStorage.getItem("entries")||"[]");
-entries.push({set:current,name:name.value,email:email.value});
-localStorage.setItem("entries",JSON.stringify(entries));
-entryCount.textContent=entries.length;
-alert("Demo entry saved locally.");
-modal.style.display="none";
+async function submitEntry(){
+
+    const user = localStorage.getItem("loggedInUser");
+
+    if(!user){
+        alert("Please sign in first.");
+        return;
+    }
+
+    const entryRef = push(ref(db, "entries"));
+
+    await set(entryRef, {
+        giveaway: current,
+        username: user,
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        timestamp: Date.now()
+    });
+
+    alert("Entry submitted!");
+    modal.style.display="none";
 }
 entryCount.textContent=(JSON.parse(localStorage.getItem("entries")||"[]")).length;
 
@@ -371,36 +385,27 @@ window.addEventListener("load", () => {
 });
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyADAh_AqoydeowXjkrWsxSc7xeVsTIrBf4",
+  apiKey: "YOUR_API_KEY",
   authDomain: "studdropgiveaway.firebaseapp.com",
   databaseURL: "https://studdropgiveaway-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "studdropgiveaway",
   storageBucket: "studdropgiveaway.firebasestorage.app",
   messagingSenderId: "154910365645",
-  appId: "1:154910365645:web:4100622eaded60e0861684",
-  measurementId: "G-QEQ8QHQNBB"
+  appId: "1:154910365645:web:4100622eaded60e0861684"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
-document.getElementById("entryForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+window.db = getDatabase(app);
+window.ref = ref;
+window.push = push;
+window.set = set;
 
-  const entryRef = push(ref(db, "entries"));
-
-  await set(entryRef, {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    timestamp: Date.now()
-  });
-
-  alert("Entry submitted!");
-});
 </script>
 </body>
 </html>
