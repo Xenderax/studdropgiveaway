@@ -303,18 +303,18 @@ async function submitEntry(){
 
     const SHEET_URL = "https://script.google.com/macros/s/AKfycbxDj-Bof-etB4XP9I9yLc1K1dqv8gHnWXL_UC_McaHEeveKY8eu69Ruchn5K9AiNXLzHA/exec";
 
+    const params = new URLSearchParams({
+        giveaway: current,
+        username: user,
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        timestamp: Date.now()
+    });
+
     try {
-        await fetch(SHEET_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                giveaway: current,
-                username: user,
-                name: document.getElementById("name").value,
-                email: document.getElementById("email").value,
-                timestamp: Date.now()
-            })
+        await fetch(SHEET_URL + "?" + params.toString(), {
+            method: "GET",
+            mode: "no-cors"
         });
 
         const prev = parseInt(localStorage.getItem("entryCount") || "0");
