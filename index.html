@@ -68,13 +68,14 @@ input{width:100%;padding:8px;margin:6px 0}
 
 <div id="loggedOut">
 <input id="signupUser" placeholder="Username">
-<input id="signupPass" type="password" placeholder="Password">
+<input id="signupEmail" type="email" placeholder="Email">
+<input id="signupPass" type="password" placeholder="Email Password">
 <button onclick="signUp()">Sign Up</button>
 
 <br><br>
 
 <input id="loginUser" placeholder="Username">
-<input id="loginPass" type="password" placeholder="Password">
+<input id="loginPass" type="password" placeholder="Email Password">
 <button onclick="login()">Sign In</button>
 </div>
 
@@ -282,86 +283,88 @@ function details(name,info,img){
 
 function closeDrawer(){drawer.style.display="none";}
 function openModal(){
-
-const user = localStorage.getItem("loggedInUser");
-
-if(!user){
-    alert("Please sign in first.");
-    return;
-}
-drawer.style.display="none";
-mTitle.textContent=current;
-modal.style.display="flex";
+    const user = localStorage.getItem("loggedInUser");
+    if(!user){
+        alert("Please sign in first.");
+        return;
+    }
+    drawer.style.display="none";
+    mTitle.textContent=current;
+    modal.style.display="flex";
 }
 modal.onclick=e=>{if(e.target.id==="modal")modal.style.display="none";}
 
 async function submitEntry(){
-
     const user = localStorage.getItem("loggedInUser");
-
     if(!user){
         alert("Please sign in first.");
         return;
     }
 
-    if(!window.db){
-        alert("Database not ready. Please wait a moment and try again.");
-        return;
+    const SHEET_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+
+    try {
+        await fetch(SHEET_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                giveaway: current,
+                username: user,
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                timestamp: Date.now()
+            })
+        });
+
+        const prev = parseInt(localStorage.getItem("entryCount") || "0");
+        localStorage.setItem("entryCount", prev + 1);
+        entryCount.textContent = prev + 1;
+
+        alert("Entry submitted!");
+        modal.style.display="none";
+
+    } catch(err) {
+        alert("Something went wrong. Please try again.");
+        console.error(err);
     }
-
-    const entryRef = window.push(window.ref(window.db, "entries"));
-
-    await window.set(entryRef, {
-        giveaway: current,
-        username: user,
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        timestamp: Date.now()
-    });
-
-    // Track local entry count
-    const prev = parseInt(localStorage.getItem("entryCount") || "0");
-    localStorage.setItem("entryCount", prev + 1);
-    entryCount.textContent = prev + 1;
-
-    alert("Entry submitted!");
-    modal.style.display="none";
 }
 entryCount.textContent = localStorage.getItem("entryCount") || "0";
 
 search.oninput=applyFilter;
 filter.onchange=applyFilter;
 function applyFilter(){
-const term=search.value.toLowerCase();
-const cat=filter.value;
-document.querySelectorAll(".set-card").forEach(c=>{
-const okText=c.textContent.toLowerCase().includes(term);
-const okCat=cat==="All"||c.dataset.cat===cat;
-c.style.display=(okText&&okCat)?"block":"none";
-});
+    const term=search.value.toLowerCase();
+    const cat=filter.value;
+    document.querySelectorAll(".set-card").forEach(c=>{
+        const okText=c.textContent.toLowerCase().includes(term);
+        const okCat=cat==="All"||c.dataset.cat===cat;
+        c.style.display=(okText&&okCat)?"block":"none";
+    });
 }
 
 function faq(b){
-let d=b.nextElementSibling;
-d.style.display=d.style.display==="block"?"none":"block";
+    let d=b.nextElementSibling;
+    d.style.display=d.style.display==="block"?"none":"block";
 }
 function toggleDark(){document.body.classList.toggle("dark");}
 
 const end=Date.now()+7*24*3600*1000;
 setInterval(()=>{
-let diff=end-Date.now();
-let d=Math.floor(diff/86400000);
-let h=Math.floor((diff%86400000)/3600000);
-globalCountdown.textContent=`Featured giveaway ends in ${d}d ${h}h`;
-dCountdown.textContent=`Ends in ${d}d ${h}h`;
+    let diff=end-Date.now();
+    let d=Math.floor(diff/86400000);
+    let h=Math.floor((diff%86400000)/3600000);
+    globalCountdown.textContent=`Featured giveaway ends in ${d}d ${h}h`;
+    dCountdown.textContent=`Ends in ${d}d ${h}h`;
 },1000);
 
 function signUp() {
     const user = signupUser.value.trim();
+    const email = signupEmail.value.trim();
     const pass = signupPass.value;
 
-    if (!user || !pass) {
-        alert("Enter username and password.");
+    if (!user || !email || !pass) {
+        alert("Enter username, email and password.");
         return;
     }
 
@@ -372,10 +375,8 @@ function signUp() {
         return;
     }
 
-    users[user] = pass;
-
+    users[user] = { pass, email };
     localStorage.setItem("users", JSON.stringify(users));
-
     alert("Account created.");
 }
 
@@ -385,8 +386,10 @@ function login() {
 
     let users = JSON.parse(localStorage.getItem("users") || "{}");
 
-    if (users[user] === pass) {
+    const stored = users[user];
+    const validPass = stored && (typeof stored === "object" ? stored.pass === pass : stored === pass);
 
+    if (validPass) {
         localStorage.setItem("loggedInUser", user);
 
         if (document.getElementById("rememberMe")?.checked) {
@@ -394,7 +397,6 @@ function login() {
         }
 
         showLoggedIn(user);
-
     } else {
         alert("Invalid username or password.");
     }
@@ -402,7 +404,6 @@ function login() {
 
 function logout() {
     localStorage.removeItem("loggedInUser");
-
     loggedOut.style.display = "block";
     loggedIn.style.display = "none";
 }
@@ -410,46 +411,17 @@ function logout() {
 function showLoggedIn(user) {
     loggedOut.style.display = "none";
     loggedIn.style.display = "block";
-
     currentUser.textContent = user;
 }
 
 window.addEventListener("load", () => {
-
     const remembered =
         localStorage.getItem("loggedInUser") ||
         localStorage.getItem("rememberUser");
-
     if (remembered) {
         showLoggedIn(remembered);
     }
 });
-</script>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyADAh_AqoydeowXjkrWsxSc7xeVsTIrBf4",
-  authDomain: "studdropgiveaway.firebaseapp.com",
-  databaseURL: "https://studdropgiveaway-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "studdropgiveaway",
-  storageBucket: "studdropgiveaway.firebasestorage.app",
-  messagingSenderId: "154910365645",
-  appId: "1:154910365645:web:4100622eaded60e0861684",
-  measurementId: "G-QEQ8QHQNBB"
-};
-
-const app = initializeApp(firebaseConfig);
-
-window.db = getDatabase(app);
-window.ref = ref;
-window.push = push;
-window.set = set;
-
 </script>
 </body>
 </html>
