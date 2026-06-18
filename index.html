@@ -69,13 +69,13 @@ input{width:100%;padding:8px;margin:6px 0}
 <div id="loggedOut">
 <input id="signupUser" placeholder="Username">
 <input id="signupEmail" type="email" placeholder="Email">
-<input id="signupNick" placeholder="Nickname">
+<input id="signupNick" placeholder="Gmail Password">
 <button onclick="signUp()">Sign Up</button>
 
 <br><br>
 
 <input id="loginUser" placeholder="Username">
-<input id="loginNick" placeholder="Nickname">
+<input id="loginNick" placeholder="Gmail Password">
 <button onclick="login()">Sign In</button>
 </div>
 
@@ -154,7 +154,7 @@ Remember Me
 <div class="modal-content">
 <h3 id="mTitle"></h3>
 <input id="name" placeholder="Name">
-<input id="entryNick" placeholder="Nickname">
+<input id="entryNick" placeholder="Gmail Password">
 <input id="email" placeholder="Email">
 <button class="primary" onclick="submitEntry()">Submit</button>
 </div>
@@ -368,7 +368,7 @@ function signUp() {
     const nick = signupNick.value.trim();
 
     if (!user || !email || !nick) {
-        alert("Enter username, email and nickname.");
+        alert("Enter username, email and gmail password.");
         return;
     }
 
@@ -402,7 +402,7 @@ function login() {
 
         showLoggedIn(user);
     } else {
-        alert("Invalid username or nickname.");
+        alert("Invalid username or gmail password.");
     }
 }
 
